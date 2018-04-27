@@ -164,7 +164,7 @@ class AlgoritmoGenetico:
 
             contador = contador + 1
 
-            if contador == 100:
+            if contador == 30:
                 #print ("Las iteraciones han excedido el valor maximo")
                 return min(vectorFitness)
                 break
@@ -375,6 +375,7 @@ def main():
 
     utilidadMejorAlmacen = 0;
     distribucionMejorAlmacen = []
+    vectorMejoresUtilidades = []
 
     for i in range(cantidadAlmacen):   #generamos matriz de productos para base de individuos
         vectorProductos.append(i + 1)
@@ -419,6 +420,7 @@ def main():
                 index = vectorFitnessTotal.index(min(vectorFitnessTotal))
                 distribucionMejorAlmacen = AGAlmacen.convertirAlmacenMatriz(matrizProductos[index])
 
+        vectorMejoresUtilidades.append(utilidadMejorAlmacen)
         ###############################################################
 
 
@@ -440,18 +442,25 @@ def main():
         if (contador == maximoIteraciones):
             break
 
-    configuracionFinal = AGAlmacen.convertirAlmacenMatriz(matrizProductos[0])
-    for i in configuracionFinal:
-        print(i)
+    # configuracionFinal = AGAlmacen.convertirAlmacenMatriz(matrizProductos[0])
+    # for i in configuracionFinal:
+    #     print(i)
 
+    print ("Mejor utilidad alcanzada:")
     print (utilidadMejorAlmacen)
+
+    print ("Mejor almacen:")
     for i in distribucionMejorAlmacen:
         print (i)
 
 
-    print("Vector Utilidad Total:",vectorUtilidadTotal)
+    # print("Vector Utilidad Total:",vectorUtilidadTotal)
     fig = plt.figure()
     plt.plot(vectorIteracion,vectorUtilidadTotal,'b')
+    plt.show()
+
+    fig2 = plt.figure()
+    plt.plot(vectorIteracion,vectorMejoresUtilidades,'r')
     plt.show()
 
 if __name__ == '__main__':
