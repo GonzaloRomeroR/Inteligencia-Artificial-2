@@ -112,14 +112,25 @@ class AlgoritmoGenetico:
             vectorColumnas = []
             vectorFilas.append(0)
             vectorColumnas.append(0)
-            for j in range(len(poblacionOrdenes[i])):
-                if poblacionOrdenes[i][j] == 1:
-                    for k in range(len(self.matrizAlmacen)):
-                        for h in range(len(self.matrizAlmacen[k])):
-                            if self.matrizAlmacen[k][h] == (j + 1):
-                                vectorFilas.append(k)
-                                vectorColumnas.append(h)
-                                break
+
+            # for j in range(len(poblacionOrdenes[i])):
+            #     if poblacionOrdenes[i][j] == 1:
+            #         for k in range(len(self.matrizAlmacen)):
+            #             for h in range(len(self.matrizAlmacen[k])):
+            #                 if self.matrizAlmacen[k][h] == (j + 1):
+            #                     vectorFilas.append(k)
+            #                     vectorColumnas.append(h)
+            #                     break
+
+            for j in range (len (poblacionOrdenes[i])):
+                for k in range(len(self.matrizAlmacen)):
+                    for h in range(len(self.matrizAlmacen[k])):
+                        if matrizAlmacen[k][h] == poblacionOrdenes[i][j]:
+                            vectorFilas.append(k)
+                            vectorColumnas.append(h)
+                            break
+
+
             vectorFilas.append(0)
             vectorColumnas.append(0)
             for i in range(len(vectorFilas)-1):
@@ -134,21 +145,33 @@ class AlgoritmoGenetico:
         self.almacenActual = almacenActual
         #self.vectorOrdenes = vectorOrdenes
         self.cantidadIndividuos = cantidadIndividuos
-        self.poblacionOrdenes = self.generarMatrizIndividuos(vectorOrdenes, cantidadIndividuos) #cantidadIndividuos x longAlmacen
+
+        vectorOrdenAuxiliar = []
+        for i in range (len(vectorOrdenes)):
+            if vectorOrdenes[i] == 1:
+                vectorOrdenAuxiliar.append(i + 1)
+        # print (vectorOrdenAuxiliar)
+        # input("")
+
+        poblacion = self.generarMatrizIndividuos(vectorOrdenAuxiliar, cantidadIndividuos) #cantidadIndividuos x longAlmacen
+
+        # for i in poblacion:
+        #     print (i)
+        # input("")
         self.matrizAlmacen = self.convertirAlmacenMatriz(self.almacenActual)
         vectorFitness = []
         #print(len(vectorFitness))  #20
         #print(len(self.poblacionOrdenes))  #20 x 48
 
         #en vez de tener 48 valores de 0 y 1, tengo 10 productos
-        poblacion = []
-        vectorAuxiliar = []
-        for i in range(len(self.poblacionOrdenes)):
-            for j in range(len(self.poblacionOrdenes[i])):
-                if self.poblacionOrdenes[i][j] == 1:
-                    vectorAuxiliar.append(j + 1)
-            poblacion.append(vectorAuxiliar)
-            vectorAuxiliar = []
+        # poblacion = []
+        # vectorAuxiliar = []
+        # for i in range(len(self.poblacionOrdenes)):
+        #     for j in range(len(self.poblacionOrdenes[i])):
+        #         if self.poblacionOrdenes[i][j] == 1:
+        #             vectorAuxiliar.append(j + 1)
+        #     poblacion.append(vectorAuxiliar)
+        #     vectorAuxiliar = []
 
         # En el for (futuro while) se tiene que actualizar la poblacion, los nuevosPadres para ser mutados y el vectorFitness.
         # Para el vectorFitness tiene que cambiar poblacionOrdenes
@@ -157,14 +180,14 @@ class AlgoritmoGenetico:
         contador = 0
 
         while True:
-            vectorFitness = self.fitnessManhattan(self.matrizAlmacen, self.convertirCeroUno(poblacion))
+            vectorFitness = self.fitnessManhattan(self.matrizAlmacen, poblacion)
             nuevosPadres = self.cruce(poblacion, vectorFitness, self.seleccionarMejorOrden)
             padresMutados = self.mutacion(nuevosPadres)
             poblacion = padresMutados
 
             contador = contador + 1
 
-            if contador == 30:
+            if contador == 20:
                 #print ("Las iteraciones han excedido el valor maximo")
                 return min(vectorFitness)
                 break
@@ -283,7 +306,7 @@ class AlgoritmoGenetico:
                 matrizPadres.append(hijo2)
 
             if i + 1 == len(matrizPadres):
-                hijo1 , hijo2 = self.cruceDeOrden(matrizPadres[i], matrizPadres[i+1])
+                hijo1 , hijo2 = self.cruceDeOrden(matrizPadres[i], matrizPadres[0])
                 matrizPadres.append(hijo1)
                 if len(matrizPadres) == cantidadTotal:
                     break
@@ -365,10 +388,10 @@ class AlgoritmoGenetico:
 
 
 def main():
-    maximoIteraciones = 100
-    cantidadAlmacen = 16
-    cantidadOrdenes = 12
-    cantidadIndividuos = 12
+    maximoIteraciones = 50
+    cantidadAlmacen = 32
+    cantidadOrdenes = 10
+    cantidadIndividuos = 20
     productosPorOrden = 5
     vectorProductos = []
     #vectorOrdenes = []
@@ -393,6 +416,9 @@ def main():
     AGOrden = AlgoritmoGenetico()
     #generador de Individuos de almacen y de ordenes POBLACION
     matrizProductos, matrizOrdenes = AGAlmacen.iniciarAlmacen(vectorProductos,cantidadIndividuos, cantidadOrdenes)
+
+    #COMENTAR EN CASO DE QUERER USAR VALORES ALEATORIOS
+    matrizOrdenes = [[1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,1,1,1],[1,0,1,1,0,0,1,0,1,0,1,0,1,0,0,0,0,0,0,1,0,1,1,0,0,0,0,0,0,1,1,0],[1,0,0,0,0,0,0,0,1,0,1,0,0,1,1,1,1,0,0,1,1,1,1,0,0,1,0,0,0,0,0,1],[1,0,0,0,0,0,0,0,1,0,1,0,0,1,1,1,1,0,0,1,1,1,1,0,0,1,0,0,0,0,0,1]]
 
     contador = 0
     vectorUtilidadTotal = []
@@ -454,9 +480,11 @@ def main():
         print (i)
 
 
+    for i in range (len (vectorUtilidadTotal)):
+        vectorUtilidadTotal[i] = vectorUtilidadTotal[i] / cantidadIndividuos
     # print("Vector Utilidad Total:",vectorUtilidadTotal)
     fig = plt.figure()
-    plt.plot(vectorIteracion,vectorUtilidadTotal,'b')
+    plt.plot(vectorIteracion,vectorUtilidadTotal, 'b')
     plt.show()
 
     fig2 = plt.figure()
