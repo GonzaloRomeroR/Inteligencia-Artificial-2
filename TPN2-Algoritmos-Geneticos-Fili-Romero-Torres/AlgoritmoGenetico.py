@@ -20,7 +20,6 @@ class AlgoritmoGenetico:
                 vectorIndividuos.append(vectorAuxiliar.pop(random.randrange(len(vectorAuxiliar))))
             matrizIndividuos.append(vectorIndividuos)
             vectorIndividuos = []
-        #print(matrizIndividuos)
         return matrizIndividuos
 
 
@@ -46,10 +45,8 @@ class AlgoritmoGenetico:
     def iniciarAlmacen(self, vectorProductos, cantidadIndividuos, cantidadOrdenes):
         self.cantidadIndividuos = cantidadIndividuos
         self.vectorProductos = vectorProductos
-        #self.vectorOrdenes = vectorOrdenes
         self.matrizProductos = self.generarMatrizIndividuos(vectorProductos,cantidadIndividuos)
         self.matrizOrdenes = self.generarMatrizOrdenes(cantidadOrdenes ,len(vectorProductos))
-        #self.matrizOrdenes = self.generarMatrizIndividuos(vectorOrdenes,cantidadOrdenes)
         return self.matrizProductos, self.matrizOrdenes
 
 
@@ -59,8 +56,7 @@ class AlgoritmoGenetico:
         contadorColumnas = 0
         configuracionAlmacen = []
         vectorAuxiliar = [] #para appendear a matriz configuracionAlmacen
-        #print("configuracion Original")
-        #print(self.almacenActual)
+
 
         i = 0
         while 1:
@@ -95,9 +91,6 @@ class AlgoritmoGenetico:
             configuracionAlmacen[i].insert(0, '-')
             configuracionAlmacen[i].append('-')
 
-        #print("Otra configuracion")
-        #for i in configuracionAlmacen:
-        #    print(i)
         return configuracionAlmacen
 
 
@@ -113,14 +106,6 @@ class AlgoritmoGenetico:
             vectorFilas.append(0)
             vectorColumnas.append(0)
 
-            # for j in range(len(poblacionOrdenes[i])):
-            #     if poblacionOrdenes[i][j] == 1:
-            #         for k in range(len(self.matrizAlmacen)):
-            #             for h in range(len(self.matrizAlmacen[k])):
-            #                 if self.matrizAlmacen[k][h] == (j + 1):
-            #                     vectorFilas.append(k)
-            #                     vectorColumnas.append(h)
-            #                     break
 
             for j in range (len (poblacionOrdenes[i])):
                 for k in range(len(self.matrizAlmacen)):
@@ -155,23 +140,9 @@ class AlgoritmoGenetico:
 
         poblacion = self.generarMatrizIndividuos(vectorOrdenAuxiliar, cantidadIndividuos) #cantidadIndividuos x longAlmacen
 
-        # for i in poblacion:
-        #     print (i)
-        # input("")
         self.matrizAlmacen = self.convertirAlmacenMatriz(self.almacenActual)
         vectorFitness = []
-        #print(len(vectorFitness))  #20
-        #print(len(self.poblacionOrdenes))  #20 x 48
 
-        #en vez de tener 48 valores de 0 y 1, tengo 10 productos
-        # poblacion = []
-        # vectorAuxiliar = []
-        # for i in range(len(self.poblacionOrdenes)):
-        #     for j in range(len(self.poblacionOrdenes[i])):
-        #         if self.poblacionOrdenes[i][j] == 1:
-        #             vectorAuxiliar.append(j + 1)
-        #     poblacion.append(vectorAuxiliar)
-        #     vectorAuxiliar = []
 
         # En el for (futuro while) se tiene que actualizar la poblacion, los nuevosPadres para ser mutados y el vectorFitness.
         # Para el vectorFitness tiene que cambiar poblacionOrdenes
@@ -259,9 +230,7 @@ class AlgoritmoGenetico:
                 norm = norm + 1.0 / vectorFitness[i]
             for i in range(len(vectorFitness)):
                 fitnessNormalizado.append((1.0 / vectorFitness[i])/norm)
-            #print(fitnessNormalizado)
-            #print(vectorFitness)
-            #-----------------------------------------------------
+
             #Seleccion de padres
             matrizPadres = []   #sera de cantidadIndividuos x productosPorOrden
             for i in range(self.cantidadIndividuos):
@@ -340,15 +309,12 @@ class AlgoritmoGenetico:
     def seleccionarMejorOrden(self, matrizTotalHijos):
         matrizHijosCeroUno = self.convertirCeroUno(matrizTotalHijos)
         vectorUtilidad = self.fitnessManhattan(self.matrizAlmacen, matrizHijosCeroUno) #matrizTotalHijos Ordenes
-        #print(vectorUtilidad)
         matrizNuevosPadres = []
         for i in range(self.cantidadIndividuos):
             index = vectorUtilidad.index(min(vectorUtilidad))
             vectorUtilidad[index] = max(vectorUtilidad) + 1
             matrizNuevosPadres.append(matrizTotalHijos[index])
-        #for i in matrizNuevosPadres:
-        #    print i
-        #print(len(matrizNuevosPadres))
+
         return matrizNuevosPadres
 
 
@@ -402,14 +368,6 @@ def main():
 
     for i in range(cantidadAlmacen):   #generamos matriz de productos para base de individuos
         vectorProductos.append(i + 1)
-    #print(vectorProductos)
-
-    # for i in range(cantidadAlmacen):   #generamos matriz de ordenes para base de individuos con 0 y 1
-    #     if i < productosPorOrden:
-    #         vectorOrdenes.append(1)
-    #     else:
-    #         vectorOrdenes.append(0)
-    # #print(vectorOrdenes)
 
     #creamos objetos de GA
     AGAlmacen = AlgoritmoGenetico()
@@ -468,9 +426,6 @@ def main():
         if (contador == maximoIteraciones):
             break
 
-    # configuracionFinal = AGAlmacen.convertirAlmacenMatriz(matrizProductos[0])
-    # for i in configuracionFinal:
-    #     print(i)
 
     print ("Mejor utilidad alcanzada:")
     print (utilidadMejorAlmacen)
