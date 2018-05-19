@@ -10,7 +10,7 @@ class Neurona:
         #print("Pesos")
         #print(self.pesos)
         self.sesgo = random.randrange(-1000,1000)/1000.0
-        #print("Sesgos")
+        #print("Sesgos: ", self.sesgo, "- Pesos: ", self.pesos)
         #print(self.sesgo)
 
     def actualizarNeurona(self):
@@ -78,6 +78,7 @@ class Capa:
             #print("Nuevos Parametros")
             #print(self.neuronas[i].pesos)
             #print(self.neuronas[i].sesgo)
+            #print("Nuevo Sesgo: ", self.neuronas[i].sesgo, "Nuevos Pesos", self.neuronas[i].pesos)
             #print ("------------------------")
 
     def actualizarCapaOculta(self, deltasCA, pesosCA, ritmoAprendizaje ):
@@ -104,9 +105,9 @@ class Capa:
             for j in range(len(self.entradaCapa)):
                 self.pesosAnteriores.append(self.neuronas[i].pesos[j])
                 self.neuronas[i].pesos[j] = self.neuronas[i].pesos[j] + variacionPesos[j]
-            #print("Nuevos Parametros")
+            #print("Nuevos Parametros")|
             #print(self.neuronas[i].pesos)
-            #print(self.neuronas[i].sesgo)
+            #print("Nuevo Sesgo: ", self.neuronas[i].sesgo, "Nuevos Pesos", self.neuronas[i].pesos)
             #print ("------------------------")
             aux = 0
 
@@ -170,3 +171,11 @@ class RedNeuronal:
         for i in range (len(self.capas)):
             vector = self.capas[i].calcularSalida(vector)
         return vector
+
+    def mostrarRed(self):
+        for i in range(len(self.capas)):
+            print("Capa: ", i)
+            for j in range(len(self.capas[i].neuronas)):
+                print("Neurona: ", j)
+                print ("Pesos: ",self.capas[i].neuronas[j].pesos)
+                print ("Sesgo: ",self.capas[i].neuronas[j].sesgo)
