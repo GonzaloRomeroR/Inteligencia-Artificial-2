@@ -3,10 +3,8 @@ import random
 from RedMLP import RedNeuronal as RN
 from generarDataSet import generar
 import numpy as np
+from generarDataSet import funcion
 
-def funcion(vector):
-    resultado = (2 * vector[0] + 3) * (vector[1] - 1) * (vector[2] - 1) * math.sin(vector[3]) + vector[4]
-    return resultado
 
 def normalizar(data, salidaDeseada):
     maximoData = 0
@@ -54,13 +52,13 @@ def main():
     # salidaDeseada = uploadDatabase("data/etiquetas.npy")
     # data, salidaDeseada, factorData, factorSalida = normalizar(data, salidaDeseada)
 
-    epocas = 10
+    epocas = 50
     numeroCapasOcultas = 1
     tamanoEntrada = len(data[0])
     tamanoCapaOculta = [10]
     tamanoSalida = len(salidaDeseada[0])
     ritmoAprendizaje = 0.3
-    funcionActivacion = ['sigmoidal', 'sigmoidal']
+    funcionActivacion = ['sigmoidal', 'lineal']
     Red = RN(tamanoEntrada, tamanoCapaOculta, tamanoSalida, numeroCapasOcultas, funcionActivacion, ritmoAprendizaje)
     Red.entrenar(data, salidaDeseada, epocas)
 
@@ -70,7 +68,7 @@ def main():
     for i in range (10):
         aux = []
         for j in range(5):
-            aux.append(random.randrange(-10000, 10000)/1000.0 / factorData )
+            aux.append(random.randrange(-10000, 10000)/10000.0 / factorData)
         print (aux)
         categoria = Red.buscarSalidaRed(aux)
         aux2 = []
@@ -78,11 +76,13 @@ def main():
             aux2.append(aux[i] * factorData)
 
         resultado = funcion(aux2)
+        print ("Factor entrada", factorData)
+        print ("Factor salida", factorSalida)
+        print ("Resultado deseado:", resultado)
+        print ("Resultado Obtenido", categoria[0] * factorSalida)
         print ("---------------")
-        print (resultado)
-        print (categoria[0] * factorSalida)
     #################################################################
-    Red.mostrarRed()
+    #Red.mostrarRed()
 
     ##########################################################
     # categoria = Red.buscarSalidaRed([0.80, 0.35, 0.43])

@@ -20,8 +20,11 @@ class Neurona:
         z = math.tanh(reglaPropagacion)
         return z
 
-    def funcionLineal():
-        pass
+    def funcionLineal(self, reglaPropagacion):
+        self.pendiente = 1/100
+        z = reglaPropagacion * self.pendiente
+        return z
+
 
     def calculoSalida(self, data):
         reglaPropagacion = 0
@@ -34,7 +37,7 @@ class Neurona:
             self.salida = self.funcionSigmoidal(reglaPropagacion)
 
         if self.funcionActivacion == "lineal":
-            pass
+            self.salida = self.funcionLineal(reglaPropagacion)
 
         return self.salida
 
@@ -61,10 +64,13 @@ class Capa:
         self.pesosAnteriores = []
         self.deltas = []
         for i in range(len(self.neuronas)):
+
             if self.funcionActivacion == "sigmoidal":
                 delta = (salidaDeseada[i] - self.salidas[i]) * (1 - self.salidas[i])
+
             if self.funcionActivacion == "lineal":
-                pass
+                delta = (salidaDeseada[i] - self.salidas[i]) * self.neuronas[i].pendiente
+
             self.deltas.append(delta)
             variacionSesgo = ritmoAprendizaje * delta * -1
             variacionPesos = []
@@ -93,7 +99,8 @@ class Capa:
                 aux = aux * (1 - self.salidas[i])
 
             if self.funcionActivacion == "lineal":
-                pass
+                aux = aux * self.neuronas[i].pendiente
+
             self.deltas.append(aux)
 
             variacionSesgo = ritmoAprendizaje * self.deltas[i] * -1
