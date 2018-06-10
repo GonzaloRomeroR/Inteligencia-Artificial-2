@@ -13,7 +13,7 @@ def generar():
     for i in range(20000):
         aux = []
         for j in range(5):
-            aux.append(random.randrange(-10000, 10000)/10000.0)
+            aux.append(random.randrange(-1000, 1000)/1000.0)
         dataset.append(aux)
         etiquetas.append([funcion(dataset[i])])
         np.save('data/dataset', dataset)

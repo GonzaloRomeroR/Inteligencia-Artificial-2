@@ -4,96 +4,74 @@ from RedMLP import RedNeuronal as RN
 from generarDataSet import generar
 import numpy as np
 from generarDataSet import funcion
-
-
-def normalizar(data, salidaDeseada):
-    maximoData = 0
-
-    for i in range(len(data)):
-        for j in range(len(data[i])):
-            if abs(data[i][j]) > maximoData:
-                maximoData = abs(data[i][j])
-
-    for i in range(len(data)):
-        for j in range(len(data[i])):
-            data[i][j] = data[i][j] / maximoData
-
-
-    maximoSalida = 0
-
-    for i in range(len(salidaDeseada)):
-        for j in range(len(salidaDeseada[i])):
-            if abs(salidaDeseada[i][j]) > maximoSalida:
-                maximoSalida = abs(salidaDeseada[i][j])
-
-
-    for i in range(len(salidaDeseada)):
-        for j in range(len(salidaDeseada[i])):
-            salidaDeseada[i][j] = salidaDeseada[i][j] / maximoSalida
-
-    return data, salidaDeseada, maximoData, maximoSalida
+import acondicionar
 
 def uploadDatabase(file):
         matrix = np.load(file)
         list = matrix.tolist()
         return (list)
 
+
 def main():
-    ##########################################################
-    # data = [[0.80, 0.35, 0.43],[0 ,0, 0], [-0.35 ,-0.8, 0.43]]
-    # salidaDeseada = [[-1, 0, 0], [0, -1, 0], [0, 0, -1]]
-    ##########################################################
 
+    data = uploadDatabase("data/dataset.npy")
+    salidaDeseada = uploadDatabase("data/etiquetas.npy")
+    data, media, desviacion = acondicionar.estandarizar(data)
+    data, salidaDeseada, factorData, factorSalida = acondicionar.normalizar(data, salidaDeseada)
+    print (data[0])
+    print (factorData)
+    print (salidaDeseada[0])
+    print (factorSalida)
 
-    data, salidaDeseada = generar()
-    data, salidaDeseada, factorData, factorSalida = normalizar(data, salidaDeseada)
-
-    # data = uploadDatabase("data/dataset.npy")
-    # salidaDeseada = uploadDatabase("data/etiquetas.npy")
-    # data, salidaDeseada, factorData, factorSalida = normalizar(data, salidaDeseada)
-
-    epocas = 50
+    epocas = 15
     numeroCapasOcultas = 1
     tamanoEntrada = len(data[0])
-    tamanoCapaOculta = [10]
+    tamanoCapaOculta = [5]
     tamanoSalida = len(salidaDeseada[0])
     ritmoAprendizaje = 0.3
-    funcionActivacion = ['sigmoidal', 'lineal']
+    funcionActivacion = ['sigmoidal', 'sigmoidal']
     Red = RN(tamanoEntrada, tamanoCapaOculta, tamanoSalida, numeroCapasOcultas, funcionActivacion, ritmoAprendizaje)
     Red.entrenar(data, salidaDeseada, epocas)
 
-    #################################################################
-    print (factorData)
 
-    for i in range (10):
+    validaciones = 100
+    errorMedio = 0
+    for i in range (validaciones):
         aux = []
         for j in range(5):
-            aux.append(random.randrange(-10000, 10000)/10000.0 / factorData)
-        print (aux)
-        categoria = Red.buscarSalidaRed(aux)
-        aux2 = []
+            aux.append(random.randrange(-1000, 1000)/1000.0 )
+        # print (aux)
+        resultadoFinal = funcion(aux)
+        resultado = funcion(aux)
+
         for i in range(len(aux)):
-            aux2.append(aux[i] * factorData)
+            aux[i] = (aux[i] - media) / desviacion
 
-        resultado = funcion(aux2)
-        print ("Factor entrada", factorData)
-        print ("Factor salida", factorSalida)
-        print ("Resultado deseado:", resultado)
-        print ("Resultado Obtenido", categoria[0] * factorSalida)
+        for i in range(len(aux)):
+            aux[i] = aux[i] / factorData
+        resultado = resultado / factorSalida
+
+        maximo = 0.8
+        minimo = 0.2
+        for i in range(len(aux)):
+            aux[i] = (maximo - minimo) * (aux[i] + 1) / 2 + minimo
+        resultado = (maximo - minimo) * (resultado + 1) / 2 + minimo
+
+        categoria = Red.buscarSalidaRed(aux)
+        # print ("Resultado Obtenido", categoria[0])
+
+        categoriaFinal = (categoria[0] - minimo) * 2 / (maximo - minimo) - 1
+        categoriaFinal = categoriaFinal * factorSalida
+        print ("Resultado deseado:", resultadoFinal)
+        print ("Resultado Obtenido", categoriaFinal)
+        errorMedio = errorMedio + (resultadoFinal - categoriaFinal) ** 2
         print ("---------------")
-    #################################################################
-    #Red.mostrarRed()
 
-    ##########################################################
-    # categoria = Red.buscarSalidaRed([0.80, 0.35, 0.43])
-    # print (categoria)
-    #
-    # categoria = Red.buscarSalidaRed([0 ,0, 0])
-    # print (categoria)
-    #
-    # categoria = Red.buscarSalidaRed([-0.35 ,-0.8, 0.43])
-    # print (categoria)
-    ##########################################################
+    errorMedio = errorMedio / validaciones
+    print ("Error medio:", errorMedio)
+
+
+
 
 if __name__ == '__main__':
     main()

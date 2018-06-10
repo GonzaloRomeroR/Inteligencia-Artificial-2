@@ -6,10 +6,10 @@ class Neurona:
         self.pesos = []
         self.funcionActivacion = funcionActivacion
         for i in range(numeroPesos):
-            self.pesos.append((random.randrange(-1000,1000)/1000.0))
+            self.pesos.append((random.randrange(-800, -200)/1000.0))
         #print("Pesos")
         #print(self.pesos)
-        self.sesgo = random.randrange(-1000,1000)/1000.0
+        self.sesgo = random.randrange(-800, -200)/1000.0
         #print("Sesgos: ", self.sesgo, "- Pesos: ", self.pesos)
         #print(self.sesgo)
 
@@ -21,7 +21,7 @@ class Neurona:
         return z
 
     def funcionLineal(self, reglaPropagacion):
-        self.pendiente = 1/100
+        self.pendiente = 1
         z = reglaPropagacion * self.pendiente
         return z
 
