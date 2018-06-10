@@ -65,7 +65,5 @@ def estandarizar(data):
         for j in range(len(data[i])):
             data[i][j] = (data[i][j] - media) / desviacion
 
-    print (desviacion)
-    print (media)
 
     return data, media, desviacion

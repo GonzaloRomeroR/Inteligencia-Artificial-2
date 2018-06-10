@@ -186,3 +186,9 @@ class RedNeuronal:
                 print("Neurona: ", j)
                 print ("Pesos: ",self.capas[i].neuronas[j].pesos)
                 print ("Sesgo: ",self.capas[i].neuronas[j].sesgo)
+
+    def ingresarParametos(self, factorData, factorSalida, media, desviacion):
+        self.factorData = factorData
+        self.factorSalida = factorSalida
+        self.media = media
+        self.desviacion = desviacion

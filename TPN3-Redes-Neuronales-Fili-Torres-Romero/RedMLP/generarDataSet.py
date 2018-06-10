@@ -10,7 +10,7 @@ def funcion(vector):
 def generar():
     dataset = []
     etiquetas = []
-    for i in range(20000):
+    for i in range(200):
         aux = []
         for j in range(5):
             aux.append(random.randrange(-1000, 1000)/1000.0)
@@ -18,8 +18,8 @@ def generar():
         etiquetas.append([funcion(dataset[i])])
         np.save('data/dataset', dataset)
         np.save('data/etiquetas', etiquetas)
-        # np.savetxt('data/dataset', dataset, delimiter=',')
-        # np.savetxt('data/etiquetas', etiquetas, delimiter=',')
+        np.savetxt('data/dataset', dataset, delimiter=',')
+        np.savetxt('data/etiquetas', etiquetas, delimiter=',')
     return dataset, etiquetas
 
 
